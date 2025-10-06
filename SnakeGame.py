@@ -59,8 +59,6 @@ class GameState:
             self.gameOver = True
             return
         
-        print(head)
-        print(food)
         if head == food:
             self.board.spawnFood(self.snake.body)
 
@@ -92,6 +90,18 @@ class Snake:
 
     def head(self):
         return self.body[0]
+    
+    def incomingDirection(self):
+        prev = self.body[1]
+        head = self.body[0]
+        if prev[1] == head[1] - 1:
+            return 0
+        elif prev[0] == head[0] - 1:
+            return 1
+        elif prev[1] == head[1] + 1:
+            return 2
+        else:
+            return 3
 
     def setDirection(self, direction):
         self.snakeDirection = direction
@@ -134,11 +144,10 @@ def main():
             if event.type == pygame.QUIT:
                 return
             if event.type == pygame.KEYDOWN and event.key in directionMap:
-                if directionMap[event.key] != gameState.snake.snakeDirection:
+                if directionMap[event.key] != gameState.snake.snakeDirection and directionMap[event.key] != gameState.snake.incomingDirection():
                     gameState.snake.setDirection(directionMap[event.key])
-                
-                if gameState.waitingForInput:
-                    gameState.waitingForInput = False
+                    if gameState.waitingForInput:
+                        gameState.waitingForInput = False
 
         gameState.update()
         renderer.draw(gameState)
