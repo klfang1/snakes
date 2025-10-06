@@ -14,11 +14,14 @@ A personal project to practice game development by recreating and expanding on t
 ## 🧰 Setup
 
 ### 1. Check if Python 3.8 is installed.
-
+```
+python --version
+```
 ### 2. Check if PyGame is installed. 
-
+```
+pip install pygame
+```
 ### 3. Clone the repository.
-
 ```
 git clone https://github.com/klfang1/snakes.git
 cd snakes
