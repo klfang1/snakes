@@ -11,6 +11,7 @@ class Renderer:
         self.colors = {
             "background": (124,252,0),
             "snake": (30, 144, 255),
+            "snakeHead": (70,130,180),
             "food": (255, 0, 0),
             "grid": (50, 50, 50)
         }
@@ -30,8 +31,12 @@ class Renderer:
 
     def drawSnake(self, snake):
         for (row, col) in snake.body:
-            rect = pygame.Rect(col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize)
-            pygame.draw.rect(self.screen, self.colors["snake"], rect)
+            if (row, col) == snake.head():
+                rect = pygame.Rect(col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize)
+                pygame.draw.rect(self.screen, self.colors["snakeHead"], rect)
+            else:
+                rect = pygame.Rect(col * self.cellSize, row * self.cellSize, self.cellSize, self.cellSize)
+                pygame.draw.rect(self.screen, self.colors["snake"], rect)
     
     def drawFood(self, board):
         if board.food:
@@ -60,6 +65,7 @@ class GameState:
             return
         
         if head == food:
+            self.score += 1
             self.board.spawnFood(self.snake.body)
 
 class Snake:
@@ -131,6 +137,7 @@ def main():
     renderer = Renderer(boardWidth, boardHeight, 25)
 
     clock = pygame.time.Clock()
+    paused = False
 
     directionMap = {
         pygame.K_LEFT: 0,
@@ -143,15 +150,24 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-            if event.type == pygame.KEYDOWN and event.key in directionMap:
-                if directionMap[event.key] != gameState.snake.snakeDirection and directionMap[event.key] != gameState.snake.incomingDirection():
-                    gameState.snake.setDirection(directionMap[event.key])
-                    if gameState.waitingForInput:
-                        gameState.waitingForInput = False
-
-        gameState.update()
-        renderer.draw(gameState)
-        clock.tick(10)
+            if event.type == pygame.KEYDOWN:
+                if not paused and event.key in directionMap:
+                    if directionMap[event.key] != gameState.snake.snakeDirection and directionMap[event.key] != gameState.snake.incomingDirection():
+                        gameState.snake.setDirection(directionMap[event.key])
+                        if gameState.waitingForInput:
+                            gameState.waitingForInput = False
+                elif event.key == pygame.K_ESCAPE:
+                    print("Bye bye!")
+                    return
+                elif event.key == pygame.K_SPACE:
+                    if paused:
+                        paused = False
+                    else:
+                        paused = True
+        if not paused:
+            gameState.update()
+            renderer.draw(gameState)
+        clock.tick(5)
 
     print("Game Over!")
     time.sleep(2)
