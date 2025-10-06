@@ -19,11 +19,13 @@ A personal project to practice game development by recreating and expanding on t
 
 ### 3. Clone the repository.
 
-``` git clone https://github.com/klfang1/snakes.git
+```
+git clone https://github.com/klfang1/snakes.git
 cd snakes
 ```
 ### 4. Run the game.
-``` python SnakeGame.py
+```
+python SnakeGame.py
 ```
 ## 🕹️ Controls
 
